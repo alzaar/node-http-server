@@ -1,21 +1,25 @@
-const url = require("url");
-let instance;
+import { IncomingMessage } from "http";
+import * as url from "url";
+import { BlogPostData, Blog } from "../types/index";
+
 let counter = 1;
 
 class Counter {
+  private static instance: Counter;
+
   constructor() {
-    if (instance) {
+    if (Counter.instance) {
       throw new Error("You can only create one instance!");
     }
-    instance = this;
+    Counter.instance = this;
   }
 
-  getInstance() {
+  getInstance(): Counter {
     return this;
   }
 
   getCount() {
-    return counter;
+    return counter.toString();
   }
 
   increment() {
@@ -29,7 +33,7 @@ class Counter {
 
 const COUNTER = Object.freeze(new Counter());
 
-const handleRequestBody = (req) => {
+export const handleRequestBody = (req: IncomingMessage): unknown => {
   return new Promise((resolve, reject) => {
     let body = "";
 
@@ -43,8 +47,8 @@ const handleRequestBody = (req) => {
   });
 };
 
-const createBlog = (data) => {
-  const blog = {
+export const createBlog = (data: any): Blog => {
+  const blog: Blog = {
     id: COUNTER.getCount(),
     created_at: Date.now(),
     updated_at: null,
@@ -56,24 +60,20 @@ const createBlog = (data) => {
   return blog;
 };
 
-const updateBlog = (updatedBlogData, originalBlog) => {
+export const updateBlog = (
+  updatedBlogData: Blog,
+  originalBlog: Blog[]
+): Blog => {
   return {
     ...originalBlog[0],
     ...updatedBlogData,
   };
 };
 
-const getBlogID = (req) => {
-  const parsedUrl = url.parse(req.url);
+export const getBlogID = (req: IncomingMessage) => {
+  const parsedUrl = url.parse(req.req.url);
   const pathSegments = parsedUrl.pathname.split("/");
   const blogID = pathSegments[2];
   if (!blogID) throw new Error("Blog ID is required!");
   return blogID;
-};
-
-module.exports = {
-  handleRequestBody,
-  createBlog,
-  updateBlog,
-  getBlogID,
 };
