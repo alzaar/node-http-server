@@ -28,3 +28,10 @@ export type HTTP_METHODS = {
 export type Controller = {
   route: (req: IncomingMessage, res: ServerResponse) => void;
 };
+
+export type DB = {
+  list: () => void;
+  add: (blog: Blog) => void;
+  update: (updatedBlog: Blog) => void;
+  remove: (blog_id: string) => void;
+};

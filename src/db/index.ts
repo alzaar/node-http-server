@@ -1,13 +1,13 @@
-import { Blog } from "../types/index";
+import { Blog, DB } from "../types/index";
 
 let blogs: Blog[] = [];
 
-const db = {
+const db: DB = {
   list: () => blogs,
-  add: (blog: Blog): void => {
+  add: (blog: Blog) => {
     blogs.push(blog);
   },
-  update: (updatedBlog: Blog): void => {
+  update: (updatedBlog: Blog) => {
     db.remove(updatedBlog.id);
     blogs.push(updatedBlog);
   },
